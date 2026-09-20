@@ -1,10 +1,157 @@
-body { font-family: system-ui, sans-serif; margin: 0; background: #f6f7f9; }
-.wrap { max-width: 1100px; margin: 0 auto; padding: 20px; }
-header { display: flex; gap: 12px; align-items: center; }
-nav { display: flex; gap: 8px; flex-wrap: wrap; margin: 16px 0; }
-nav button.on { font-weight: bold; }
-pre { background: #fff; padding: 12px; overflow: auto; font-size: 12px; }
-.err { color: #b00020; }
-.row { display: flex; gap: 8px; align-items: center; background: #fff; padding: 8px; margin: 6px 0; }
-button { cursor: pointer; }
-input { padding: 6px; width: 320px; }
+:root {
+  --bg: #0a0a0b;
+  --panel: #131316;
+  --line: #26262b;
+  --text: #f4f4f5;
+  --muted: #8e8e96;
+  --accent: #22c55e;
+  --danger: #ef4444;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, "SF Pro Text", "Segoe UI", Inter, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Login */
+.login {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.login-card {
+  width: 360px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 40px 32px;
+  text-align: left;
+}
+
+.brand {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.brand .sub {
+  color: var(--muted);
+  font-weight: 400;
+  font-size: 18px;
+}
+
+.vision {
+  color: var(--muted);
+  margin: 8px 0 28px;
+}
+
+.hint {
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 16px;
+}
+
+/* Shell */
+.app { max-width: 1080px; margin: 0 auto; padding: 0 20px 60px; }
+
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.who { display: flex; gap: 12px; align-items: center; color: var(--muted); }
+
+.tabs { display: flex; gap: 4px; flex-wrap: wrap; padding: 16px 0; }
+
+main { padding-top: 8px; }
+
+h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin: 28px 0 12px; }
+
+/* Controls */
+button {
+  background: var(--panel);
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 7px 14px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+button:hover { border-color: var(--muted); }
+
+button.primary { background: var(--accent); border-color: var(--accent); color: #06130a; font-weight: 600; }
+button.danger { color: var(--danger); border-color: #3d2226; }
+button.ghost { background: transparent; }
+.tabs button.on { background: var(--text); color: var(--bg); border-color: var(--text); font-weight: 600; }
+
+input {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--text);
+  padding: 8px 12px;
+  font-size: 13px;
+  margin: 6px 8px 6px 0;
+  width: 280px;
+  max-width: 100%;
+}
+
+/* Content */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+
+.stat {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 18px;
+}
+
+.stat-v { font-size: 30px; font-weight: 700; letter-spacing: -1px; }
+.stat-l { color: var(--muted); font-size: 12px; margin-top: 4px; }
+
+.card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 16px 18px;
+  margin-bottom: 10px;
+}
+
+.actions { display: flex; gap: 8px; flex-shrink: 0; }
+
+.tag { color: var(--muted); font-size: 12px; }
+.muted { color: var(--muted); }
+.err { color: var(--danger); }
+
+table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); font-size: 13px; }
+th { color: var(--muted); font-weight: 500; text-transform: uppercase; font-size: 11px; letter-spacing: 1px; }
+
+pre {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 14px;
+  overflow: auto;
+  font-size: 12px;
+}
+
+.searchbar { display: flex; align-items: center; margin-bottom: 12px; }
+.login-card .primary { width: 100%; padding: 12px; font-size: 14px; }
