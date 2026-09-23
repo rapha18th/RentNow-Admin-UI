@@ -155,3 +155,5 @@ pre {
 
 .searchbar { display: flex; align-items: center; margin-bottom: 12px; }
 .login-card .primary { width: 100%; padding: 12px; font-size: 14px; }
+.form { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 12px; margin-top: 8px; }
+.form input { width: 100%; }

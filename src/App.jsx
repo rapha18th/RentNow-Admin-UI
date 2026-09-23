@@ -150,23 +150,7 @@ export default function App() {
           </section>
         )}
 
-        {tab === 'Listings' && data && (
-          <section>
-            {(data.listings || []).length === 0 && <p className="muted">Queue clear.</p>}
-            {(data.listings || []).map((l) => (
-              <div key={l.id} className="card">
-                <div>
-                  <strong>{l.title}</strong> <span className="tag">{l.id}</span>
-                  <div className="muted">{l.type} · {l.suburb}, {l.city} · {money(l.rent_cents)}/mo · {l.provider_phone}</div>
-                </div>
-                <div className="actions">
-                  <button className="primary" onClick={() => act('/api/listings/moderate', { listing_id: l.id, approve: true })}>Approve</button>
-                  <button className="danger" onClick={() => act('/api/listings/moderate', { listing_id: l.id, approve: false })}>Reject</button>
-                </div>
-              </div>
-            ))}
-          </section>
-        )}
+        {tab === 'Listings' && <ListingsView act={act} />}
 
         {tab === 'Viewings' && data && <Viewings list={data.viewings || []} act={act} />}
         {tab === 'Payments' && data && <Payments rows={data.payments || []} />}
@@ -200,6 +184,87 @@ export default function App() {
         )}
       </main>
     </div>
+  )
+}
+
+function ListingsView({ act }) {
+  const [rows, setRows] = useState([])
+  const [filter, setFilter] = useState('pending_review')
+  const [err, setErr] = useState('')
+  const [form, setForm] = useState({ title: '', type: '2 bedroom', rent: '', deposit: '', city: 'Harare', suburb: '', provider_phone: '', provider_name: '', amenities: '', description: '' })
+
+  async function load(f) {
+    try {
+      const r = await api.get('/api/listings' + (f ? `?status=${f}` : ''))
+      setRows(r.listings || [])
+    } catch (e) { setErr(e.message) }
+  }
+  useEffect(() => { load(filter) }, [filter]) // eslint-disable-line
+
+  async function create() {
+    try {
+      await api.post('/api/listings/create', form)
+      setForm({ title: '', type: '2 bedroom', rent: '', deposit: '', city: 'Harare', suburb: '', provider_phone: '', provider_name: '', amenities: '', description: '' })
+      await load(filter)
+    } catch (e) { setErr(e.message) }
+  }
+
+  async function del(id) {
+    if (!window.confirm(`Delete ${id}?`)) return
+    try { await api.post('/api/listings/delete', { listing_id: id }); await load(filter) }
+    catch (e) { setErr(e.message) }
+  }
+
+  async function seed() {
+    try { await api.post('/api/seed', {}); await load(filter) }
+    catch (e) { setErr(e.message) }
+  }
+
+  const F = (k, ph) => (
+    <input placeholder={ph} value={form[k]} onChange={(e) => setForm({ ...form, [k]: e.target.value })} />
+  )
+
+  return (
+    <section>
+      {err && <p className="err">{err}</p>}
+      <div className="actions" style={{ marginBottom: 12 }}>
+        {['pending_review', 'active', ''].map((f) => (
+          <button key={f} className={filter === f ? 'on' : ''} onClick={() => setFilter(f)}>
+            {f === '' ? 'All' : f === 'pending_review' ? 'Pending' : 'Active'}
+          </button>
+        ))}
+        <button onClick={seed}>Reload demo set</button>
+      </div>
+      {rows.map((l) => (
+        <div key={l.id} className="card">
+          <div>
+            <strong>{l.title}</strong> <span className="tag">{l.id} · {l.status}</span>
+            <div className="muted">{l.type} · {l.suburb}, {l.city} · {money(l.rent_cents)}/mo · {l.provider_phone}</div>
+          </div>
+          <div className="actions">
+            {l.status === 'pending_review' && (
+              <button className="primary" onClick={() => act('/api/listings/moderate', { listing_id: l.id, approve: true }).then(() => load(filter))}>Approve</button>
+            )}
+            <button className="danger" onClick={() => del(l.id)}>Delete</button>
+          </div>
+        </div>
+      ))}
+      {rows.length === 0 && <p className="muted">Nothing here.</p>}
+      <h2>List a home for an owner</h2>
+      <div className="form">
+        {F('title', 'Title, e.g. 2 Bedroom House, Westgate')}
+        {F('provider_phone', 'Owner phone, e.g. +26377...')}
+        {F('provider_name', 'Owner name')}
+        {F('type', 'Type: single room, cottage, 1 bedroom, 2 bedroom')}
+        {F('rent', 'Rent USD/month')}
+        {F('deposit', 'Deposit USD')}
+        {F('city', 'City')}
+        {F('suburb', 'Suburb')}
+        {F('amenities', 'Amenities, comma list')}
+        {F('description', 'Description')}
+        <div><button className="primary" onClick={create}>Publish live</button></div>
+      </div>
+    </section>
   )
 }
 
